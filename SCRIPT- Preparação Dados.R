@@ -1,15 +1,13 @@
 #filtra propostas da modalidade Convênio ou Contrato de Repasse dos anos entre 2016 e 2022 - Brasil
 propostasBrasil <-  
   filter(propostas, ano >= 2016 &  ano <= 2022 & 
-           modalidade %in% c("CONVENIO", "CONTRATO DE REPASSE") &
-           !(situacao_proposta %in% c('CONVENIO_ANULADO', 'CONVENIO_RESCINDIDO',
-                                 'ASSINATURA_PENDENTE_REGISTRO_TV_SIAFI'))
+           modalidade %in% c("CONVENIO", "CONTRATO DE REPASSE") 
   ) 
 
 convenios <- 
   filter(convenios, 
            !(situacao_convenio %in% c('Cancelado', 'Convênio Rescindido',
-                                      'Cancelado'))
+                                      'Convênio Anulado'))
   ) 
 
 ##junção de convênios com propostas pelo ID_PROPOSTA
@@ -132,17 +130,95 @@ converte_data = function (a) {
 
 temp <- convenio_proposta_juncao %>%
   mutate(
-    tempo_elaboracao_plano_trabalho = round(difftime(converte_data(dt_inicio_analise), converte_data(dt_cadastro_proposta), unit="days")) 
-    ,tempo_analise_plano_trabalho = round(difftime(converte_data(dt_aprovacao_plano), converte_data(dt_inicio_analise), unit="days"))
-    ,tempo_prestacao_contas_enviado_analise = round(difftime(converte_data(dt_envio_prestacao_contas), converte_data(dt_aguardando_prestacao_contas), unit="days"))
-    ,tempo_prestacao_contas_em_analise = round(difftime(converte_data(dt_fim_prestacao_contas), converte_data(dt_envio_prestacao_contas), unit="days"))
+    tempo_elaboracao_plano_trabalho_dias = as.numeric(round(difftime(converte_data(dt_inicio_analise), converte_data(dt_cadastro_proposta), unit="days")))
+    ,tempo_analise_plano_trabalho_dias = as.numeric(round(difftime(converte_data(dt_aprovacao_plano), converte_data(dt_inicio_analise), unit="days")))
+    ,tempo_prestacao_contas_enviado_analise_dias = as.numeric(round(difftime(converte_data(dt_envio_prestacao_contas), converte_data(dt_aguardando_prestacao_contas), unit="days")))
+    ,tempo_prestacao_contas_em_analise_dias = as.numeric(round(difftime(converte_data(dt_fim_prestacao_contas), converte_data(dt_analise_prestacao_contas), unit="days")))
   )
 
 
-dados_transferegov <- temp %>%
-  select(ano, repassador, recebedor, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
+
+#Análise do tempo_elaboracao_plano_trabalho_dias -> foi verificado que existem aprovações com a hora zerada  no memso dia da cadastro da proposta - nesse caso o tempo deve ser 0 ao invés de -1
+#Análise do tempo_elaboracao_plano_trabalho_dias -> foram  verificadas 8 propostas com tempo menor do que 1. Ao analisar os dados foi verificado que a data de crição da proposta está posterior a data de análise da proposta 
+                                                    #dados inconsistentes
+
+
+
+
+#df2 <- na.omit(df)
+#temp <- temp[!is.na(temp$tempo_elaboracao_plano_trabalho_dias),] 
+temp$tempo_elaboracao_plano_trabalho_dias <- replace(temp$tempo_elaboracao_plano_trabalho_dias, temp$tempo_elaboracao_plano_trabalho_dias == -1 , 0)
+tempo_positivo_elab_plano <- 
+  filter(temp, tempo_elaboracao_plano_trabalho_dias >= 0) %>%
+  select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
          dt_cadastro_proposta, dt_inicio_analise, dt_aprovacao_plano, dt_aguardando_prestacao_contas, dt_envio_prestacao_contas, dt_analise_prestacao_contas, dt_fim_prestacao_contas, 
-         tempo_elaboracao_plano_trabalho, tempo_analise_plano_trabalho, tempo_prestacao_contas_enviado_analise, tempo_prestacao_contas_em_analise)
+         tempo_elaboracao_plano_trabalho_dias)
+mean(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
+min(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
+max(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
 
 
-dados_transferegov_final <- dados_transferegov[order(dados_transferegov$ano,dados_transferegov$repassador, dados_transferegov$recebedor ),]
+temp$tempo_analise_plano_trabalho_dias <- replace(temp$tempo_analise_plano_trabalho_dias, temp$tempo_analise_plano_trabalho_dias == -1 , 0)
+tempo_positivo_aprov_plano <- 
+  filter(temp, tempo_analise_plano_trabalho_dias >= -1) %>%
+  select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
+         dt_cadastro_proposta, dt_inicio_analise, dt_aprovacao_plano, dt_aguardando_prestacao_contas, dt_envio_prestacao_contas, dt_analise_prestacao_contas, dt_fim_prestacao_contas, 
+         tempo_analise_plano_trabalho_dias)
+mean(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
+min(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
+max(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
+
+#retirado os tempos negativos - antecipação de PC ou inconsistência na base ???
+temp$tempo_prestacao_contas_enviado_analise_dias <- replace(temp$tempo_prestacao_contas_enviado_analise_dias, temp$tempo_prestacao_contas_enviado_analise_dias == -1 , 0)
+tempo_positivo_envio_pc <- 
+  filter(temp, tempo_prestacao_contas_enviado_analise_dias >= -1) %>%
+  select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
+         dt_cadastro_proposta, dt_inicio_analise, dt_aprovacao_plano, dt_aguardando_prestacao_contas, dt_envio_prestacao_contas, dt_analise_prestacao_contas, dt_fim_prestacao_contas, 
+         tempo_prestacao_contas_enviado_analise_dias)
+mean(tempo_positivo_envio_pc$tempo_prestacao_contas_enviado_analise_dias)
+min(tempo_positivo_envio_pc$tempo_prestacao_contas_enviado_analise_dias)
+max(tempo_positivo_envio_pc$tempo_prestacao_contas_enviado_analise_dias)
+
+#retirado os tempos negativos - inconsistência na base ???
+temp$tempo_prestacao_contas_em_analise_dias <- replace(temp$tempo_prestacao_contas_em_analise_dias, temp$tempo_prestacao_contas_em_analise_dias == -1 , 0)
+tempo_positivo_fim_pc <- 
+  filter(temp, tempo_prestacao_contas_em_analise_dias >= -1) %>%
+  select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
+         dt_cadastro_proposta, dt_inicio_analise, dt_aprovacao_plano, dt_aguardando_prestacao_contas, dt_envio_prestacao_contas, dt_analise_prestacao_contas, dt_fim_prestacao_contas, 
+         tempo_prestacao_contas_em_analise_dias)
+mean(tempo_positivo_fim_pc$tempo_prestacao_contas_em_analise_dias)
+min(tempo_positivo_fim_pc$tempo_prestacao_contas_em_analise_dias)
+max(tempo_positivo_fim_pc$tempo_prestacao_contas_em_analise_dias)
+
+# commad + shift + c
+# dados_transferegov <- temp %>%
+#   select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
+#          dt_cadastro_proposta, dt_inicio_analise, dt_aprovacao_plano, dt_aguardando_prestacao_contas, dt_envio_prestacao_contas, dt_analise_prestacao_contas, dt_fim_prestacao_contas, 
+#          tempo_elaboracao_plano_trabalho_dias, tempo_analise_plano_trabalho_dias, tempo_prestacao_contas_enviado_analise_dias, tempo_prestacao_contas_em_analise_dias)
+# 
+# 
+# dados_transferegov_final <- dados_transferegov[order(dados_transferegov$ano,dados_transferegov$concedente, dados_transferegov$convenente ),]
+# 
+# #total de concedentes
+# totalConcedentes <- distinct(dados_transferegov_final, concedente)
+# 
+# #total de convenios por orgao e ano
+# totalConveniosOrgaoAno <- dados_transferegov_final %>% count(concedente, ano) 
+# 
+# #total de convenios por orgao
+# totalConveniosOrgao <- dados_transferegov_final %>% count(concedente) 
+# 
+# #total de concedentes com mais de 100 convênios
+# totalConveniosOrgaoMaior100 <-
+# filter(totalConveniosOrgao, n > 100) 
+# 
+# #10 concedentes com maior número de con vênios
+# dezMaioresRepassadores <- filter(totalConveniosOrgao, n > 1950) 
+# 
+# #calcular média dos tempos por concedente
+# #colMeans(dados$V1) e mean(dados$V1)
+# 
+# concedenteMinCidades <- dados_transferegov_final %>% filter(concedente == 'MINISTERIO DAS CIDADES')
+# concedenteMinCidadesMediaAprovPT <- dados_transferegov_final %>% filter(concedente == 'MINISTERIO DAS CIDADES')  %>% mean(dados_transferegov_final$tempo_analise_plano_trabalho_dias)
+
+

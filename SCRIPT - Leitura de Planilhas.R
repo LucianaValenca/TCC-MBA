@@ -2,7 +2,7 @@
 propostas_completo <- read.csv("planilhas de dados/siconv_proposta.csv", sep=";" , dec=".")
 ##Carregar os dados com as colunas que serão utilizadas
 propostas <- select(propostas_completo, "ID_PROPOSTA", "ANO_PROP", "NR_PROPOSTA", "SIT_PROPOSTA", "MODALIDADE",  "COD_ORGAO","DESC_ORGAO", "UF_PROPONENTE","MUNIC_PROPONENTE", "VL_REPASSE_PROP")
-propostas <- rename(propostas, id_proposta = ID_PROPOSTA, ano=ANO_PROP, numero=NR_PROPOSTA, situacao_proposta=SIT_PROPOSTA, modalidade=MODALIDADE, siorg=COD_ORGAO, repassador=DESC_ORGAO, recebedor=MUNIC_PROPONENTE, uf=UF_PROPONENTE, valor_repasse_proposta=VL_REPASSE_PROP)
+propostas <- rename(propostas, id_proposta = ID_PROPOSTA, ano=ANO_PROP, numero=NR_PROPOSTA, situacao_proposta=SIT_PROPOSTA, modalidade=MODALIDADE, siorg=COD_ORGAO, concedente=DESC_ORGAO, convenente=MUNIC_PROPONENTE, uf=UF_PROPONENTE, valor_repasse_proposta=VL_REPASSE_PROP)
 
 ##Carregar os dados de todas os  convênios do TransfereGov
 convenios_completo <- read.csv("planilhas de dados/siconv_convenio.csv", sep=";" , dec=".")
