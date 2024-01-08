@@ -148,17 +148,28 @@ temp <- convenio_proposta_juncao %>%
 #df2 <- na.omit(df)
 #temp <- temp[!is.na(temp$tempo_elaboracao_plano_trabalho_dias),] 
 temp$tempo_elaboracao_plano_trabalho_dias <- replace(temp$tempo_elaboracao_plano_trabalho_dias, temp$tempo_elaboracao_plano_trabalho_dias == -1 , 0)
+temp$tempo_elaboracao_plano_trabalho_dias <- replace(temp$tempo_elaboracao_plano_trabalho_dias, temp$tempo_elaboracao_plano_trabalho_dias < -1 , NA)
 tempo_positivo_elab_plano <- 
   filter(temp, tempo_elaboracao_plano_trabalho_dias >= 0) %>%
   select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
-         dt_cadastro_proposta, dt_inicio_analise, dt_aprovacao_plano, dt_aguardando_prestacao_contas, dt_envio_prestacao_contas, dt_analise_prestacao_contas, dt_fim_prestacao_contas, 
+         dt_cadastro_proposta, dt_inicio_analise, 
          tempo_elaboracao_plano_trabalho_dias)
 mean(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
 min(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
 max(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
 
+#tempo médio por convenete
+#totalConvenente <- distinct(tempo_positivo_elab_plano, convenente)
+#totalConveniosConvenete <- tempo_positivo_elab_plano %>% count(convenente)
+
+##Média por convenente
+mediaElabPlanPorConvenente <- tempo_positivo_elab_plano %>%                                      
+  group_by(convenente) %>%
+  summarise_at(vars(tempo_elaboracao_plano_trabalho_dias),
+               list(mean =mean))
 
 temp$tempo_analise_plano_trabalho_dias <- replace(temp$tempo_analise_plano_trabalho_dias, temp$tempo_analise_plano_trabalho_dias == -1 , 0)
+temp$tempo_analise_plano_trabalho_dias <- replace(temp$tempo_analise_plano_trabalho_dias, temp$tempo_analise_plano_trabalho_dias < -1 , NA)
 tempo_positivo_aprov_plano <- 
   filter(temp, tempo_analise_plano_trabalho_dias >= -1) %>%
   select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
@@ -168,8 +179,20 @@ mean(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
 min(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
 max(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
 
+#tempo médio por concedente
+#totalConvenente <- distinct(tempo_positivo_elab_plano, convenente)
+#totalConveniosConvenete <- tempo_positivo_elab_plano %>% count(convenente)
+
+##Média por concedente
+mediaAprovPlanPorConcedente <- tempo_positivo_aprov_plano %>%                                      
+  group_by(concedente) %>%
+  summarise_at(vars(tempo_analise_plano_trabalho_dias),
+               list(mean =mean))
+
+
 #retirado os tempos negativos - antecipação de PC ou inconsistência na base ???
 temp$tempo_prestacao_contas_enviado_analise_dias <- replace(temp$tempo_prestacao_contas_enviado_analise_dias, temp$tempo_prestacao_contas_enviado_analise_dias == -1 , 0)
+temp$tempo_prestacao_contas_enviado_analise_dias <- replace(temp$tempo_prestacao_contas_enviado_analise_dias, temp$tempo_prestacao_contas_enviado_analise_dias < -1 , NA)
 tempo_positivo_envio_pc <- 
   filter(temp, tempo_prestacao_contas_enviado_analise_dias >= -1) %>%
   select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
@@ -179,8 +202,19 @@ mean(tempo_positivo_envio_pc$tempo_prestacao_contas_enviado_analise_dias)
 min(tempo_positivo_envio_pc$tempo_prestacao_contas_enviado_analise_dias)
 max(tempo_positivo_envio_pc$tempo_prestacao_contas_enviado_analise_dias)
 
+#tempo médio por convenete
+#totalConvenente <- distinct(tempo_positivo_envio_pc, convenente)
+#totalConveniosConvenente <- tempo_positivo_envio_pc %>% count(convenente)
+
+##Média por convenente
+mediaEnvioPCConvenente <- tempo_positivo_envio_pc %>%                                      
+  group_by(convenente) %>%
+  summarise_at(vars(tempo_prestacao_contas_enviado_analise_dias),
+               list(mean =mean))
+
 #retirado os tempos negativos - inconsistência na base ???
 temp$tempo_prestacao_contas_em_analise_dias <- replace(temp$tempo_prestacao_contas_em_analise_dias, temp$tempo_prestacao_contas_em_analise_dias == -1 , 0)
+temp$tempo_prestacao_contas_em_analise_dias <- replace(temp$tempo_prestacao_contas_em_analise_dias, temp$tempo_prestacao_contas_em_analise_dias < -1 , NA)
 tempo_positivo_fim_pc <- 
   filter(temp, tempo_prestacao_contas_em_analise_dias >= -1) %>%
   select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
@@ -190,11 +224,21 @@ mean(tempo_positivo_fim_pc$tempo_prestacao_contas_em_analise_dias)
 min(tempo_positivo_fim_pc$tempo_prestacao_contas_em_analise_dias)
 max(tempo_positivo_fim_pc$tempo_prestacao_contas_em_analise_dias)
 
+#tempo médio por concedente
+#totalConvenente <- distinct(tempo_positivo_elab_plano, convenente)
+#totalConveniosConvenete <- tempo_positivo_elab_plano %>% count(convenente)
+
+##Média por concedente
+mediaFimPC <- tempo_positivo_fim_pc %>%                                      
+  group_by(concedente) %>%
+  summarise_at(vars(tempo_prestacao_contas_em_analise_dias),
+               list(mean =mean))
+
 # commad + shift + c
-# dados_transferegov <- temp %>%
-#   select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
-#          dt_cadastro_proposta, dt_inicio_analise, dt_aprovacao_plano, dt_aguardando_prestacao_contas, dt_envio_prestacao_contas, dt_analise_prestacao_contas, dt_fim_prestacao_contas, 
-#          tempo_elaboracao_plano_trabalho_dias, tempo_analise_plano_trabalho_dias, tempo_prestacao_contas_enviado_analise_dias, tempo_prestacao_contas_em_analise_dias)
+dados_transferegov <- temp %>%
+  select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio,
+         dt_cadastro_proposta, dt_inicio_analise, dt_aprovacao_plano, dt_aguardando_prestacao_contas, dt_envio_prestacao_contas, dt_analise_prestacao_contas, dt_fim_prestacao_contas,
+         tempo_elaboracao_plano_trabalho_dias, tempo_analise_plano_trabalho_dias, tempo_prestacao_contas_enviado_analise_dias, tempo_prestacao_contas_em_analise_dias)
 # 
 # 
 # dados_transferegov_final <- dados_transferegov[order(dados_transferegov$ano,dados_transferegov$concedente, dados_transferegov$convenente ),]
