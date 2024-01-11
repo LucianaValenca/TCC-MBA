@@ -157,6 +157,8 @@ tempo_positivo_elab_plano <-
 mean(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
 min(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
 max(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
+sd(tempo_positivo_elab_plano$tempo_elaboracao_plano_trabalho_dias)
+
 
 #tempo médio por convenete
 #totalConvenente <- distinct(tempo_positivo_elab_plano, convenente)
@@ -178,6 +180,7 @@ tempo_positivo_aprov_plano <-
 mean(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
 min(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
 max(tempo_positivo_aprov_plano$tempo_analise_plano_trabalho_dias)
+
 
 #tempo médio por concedente
 #totalConvenente <- distinct(tempo_positivo_elab_plano, convenente)
@@ -265,4 +268,17 @@ dados_transferegov <- temp %>%
 # concedenteMinCidades <- dados_transferegov_final %>% filter(concedente == 'MINISTERIO DAS CIDADES')
 # concedenteMinCidadesMediaAprovPT <- dados_transferegov_final %>% filter(concedente == 'MINISTERIO DAS CIDADES')  %>% mean(dados_transferegov_final$tempo_analise_plano_trabalho_dias)
 
-
+# situacoes <- distinct(convenio_proposta, situacao_convenio)
+# 
+# PC <-  
+#   filter(convenio_proposta, ano >= 2016 &  ano <= 2022 & 
+#            situacao_convenio %in% c('Prestação de Contas Aprovada',
+#                                     'Prestação de Contas Aprovada com Ressalvas',
+#                                     'Prestação de Contas Comprovada em Análise',
+#                                     'Prestação de Contas Concluída',
+#                                     'Prestação de Contas em Análise',
+#                                     'Prestação de Contas em Complementação',
+#                                     'Prestação de Contas enviada para Análise',
+#                                     'Prestação de Contas Iniciada Por Antecipação',
+#                                     'Prestação de Contas Rejeitada') 
+#   ) 

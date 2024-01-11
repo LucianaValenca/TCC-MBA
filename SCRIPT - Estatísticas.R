@@ -17,6 +17,8 @@ mediaElabPlanPorConvenente <- tempo_positivo_elab_plano %>%
   summarise_at(vars(tempo_elaboracao_plano_trabalho_dias),
                list(mean =mean))
 
+
+
 #Tempo médio  de análise do plano de trabalho  (mandatária e concedente)
 mediaAprovPlanPorConcedente <- tempo_positivo_aprov_plano %>%                                      
   group_by(concedente) %>%
