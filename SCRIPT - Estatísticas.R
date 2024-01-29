@@ -36,3 +36,13 @@ mediaFimPC <- tempo_positivo_fim_pc %>%
   group_by(concedente) %>%
   summarise_at(vars(tempo_prestacao_contas_em_analise_dias),
                list(mean =mean))
+
+
+
+#Tempo médio de apresentação do plano de trabalho (convenente) 
+mediaElabPlanPorConvenente <- tempo_positivo_elab_plano %>%                                      
+  group_by(convenente) %>%
+  summarise_at(vars(tempo_elaboracao_plano_trabalho_dias),
+               list(mean =mean))
+
+

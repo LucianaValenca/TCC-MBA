@@ -1,7 +1,12 @@
 #filtra propostas da modalidade Convênio ou Contrato de Repasse dos anos entre 2016 e 2022 - Brasil
 propostasBrasil <-  
   filter(propostas, ano >= 2016 &  ano <= 2022 & 
-           modalidade %in% c("CONVENIO", "CONTRATO DE REPASSE") 
+           modalidade %in% c("CONVENIO", "CONTRATO DE REPASSE")
+  ) 
+
+propostasBrasil2 <-  
+  filter(propostas, ano >= 2016 &  ano <= 2022 & 
+           modalidade %in% c("CONVENIO", "CONTRATO DE REPASSE", "CONVENIO OU CONTRATO DE REPASSE" )
   ) 
 
 convenios <- 
@@ -12,6 +17,7 @@ convenios <-
 
 ##junção de convênios com propostas pelo ID_PROPOSTA
 convenio_proposta <- inner_join(convenios,propostasBrasil,by="id_proposta")
+convenio_proposta2 <- inner_join(convenios,propostasBrasil2,by="id_proposta")
 
 #pegar apenas os históricos das Propostas a serem analisados
 hist_convenio_proposta <- semi_join(historico, convenio_proposta,by="id_proposta")
@@ -244,7 +250,7 @@ dados_transferegov <- temp %>%
          tempo_elaboracao_plano_trabalho_dias, tempo_analise_plano_trabalho_dias, tempo_prestacao_contas_enviado_analise_dias, tempo_prestacao_contas_em_analise_dias)
 # 
 # 
-# dados_transferegov_final <- dados_transferegov[order(dados_transferegov$ano,dados_transferegov$concedente, dados_transferegov$convenente ),]
+ dados_transferegov_final <- dados_transferegov[order(dados_transferegov$ano,dados_transferegov$concedente, dados_transferegov$convenente ),]
 # 
 # #total de concedentes
 # totalConcedentes <- distinct(dados_transferegov_final, concedente)
@@ -253,11 +259,44 @@ dados_transferegov <- temp %>%
 # totalConveniosOrgaoAno <- dados_transferegov_final %>% count(concedente, ano) 
 # 
 # #total de convenios por orgao
-# totalConveniosOrgao <- dados_transferegov_final %>% count(concedente) 
+ totalConveniosOrgao <- dados_transferegov_final %>% count(concedente) 
+ 
+ 
+
+ # #obter os 10 concedentes que repassaram maior volume financeiro 
+ # dados_transferegov_final$valor_repasse_convenio = as.double(sub(",", ".", dados_transferegov_final$valor_repasse_convenio, fixed = TRUE))
+ # 
+ # somaRepasseConcedentes <- aggregate(dados_transferegov_final$valor_repasse_convenio, by=list(concedente=dados_transferegov_final$concedente), FUN=sum)
+ # 
+ # somaRepasseConcedentes <- somaRepasseConcedentes[order(somaRepasseConcedentes$x, decreasing=TRUE), ][1:10, ]
+ # 
+ # somaRepasseConcedentes$x <- as.character(somaRepasseConcedentes$x)
+ # 
+ # dados_transferegov_top_10_concedentes <- dados_transferegov_final %>% filter(concedente %in% c(somaRepasseConcedentes$concedente ))
+ # 
+ # #dos 90617 convênios 81527 são dos top 10 concedentes = 89,96%
+ # #em decorrência desse percentual também serão selecionados os principais convenentes desses concedentes 
+ # tempo_positivo_elab_plano_top10 <- 
+ #   filter(dados_transferegov_top_10_concedentes, tempo_elaboracao_plano_trabalho_dias >= 0) %>%
+ #   select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
+ #          dt_cadastro_proposta, dt_inicio_analise, 
+ #          tempo_elaboracao_plano_trabalho_dias)
+ # 
+ # 
+ # tempo_positivo_elab_plano <- 
+ #   filter(temp, tempo_elaboracao_plano_trabalho_dias >= 0) %>%
+ #   select(ano, concedente, convenente, uf, valor_repasse_convenio, modalidade, id_proposta, numero, convenio, situacao_convenio, 
+ #          dt_cadastro_proposta, dt_inicio_analise, 
+ #          tempo_elaboracao_plano_trabalho_dias)
+ # 
+ 
+ #renomear x
+
+
 # 
 # #total de concedentes com mais de 100 convênios
-# totalConveniosOrgaoMaior100 <-
-# filter(totalConveniosOrgao, n > 100) 
+ totalConveniosOrgaoMaior100 <-
+ filter(totalConveniosOrgao, n > 100) 
 # 
 # #10 concedentes com maior número de con vênios
 # dezMaioresRepassadores <- filter(totalConveniosOrgao, n > 1950) 

@@ -2,7 +2,8 @@
 #                  INSTALAÇÃO E CARREGAMENTO DE PACOTES NECESSÁRIOS             #
 ##################################################################################
 #Pacotes utilizados
-pacotes <- c("magrittr","dplyr", "data.table")
+pacotes <- c("magrittr","dplyr", "data.table", "stringr")
+
 
 
 
