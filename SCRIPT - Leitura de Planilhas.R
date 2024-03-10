@@ -14,7 +14,7 @@ convenios_completo <- read.csv("planilhas de dados/siconv_convenio.csv", sep=";"
 convenios <- select(convenios_completo, 'ID_PROPOSTA', 'NR_CONVENIO',	'SIT_CONVENIO',	'DIAS_PREST_CONTAS',	'DIA_LIMITE_PREST_CONTAS', 'VL_REPASSE_CONV')
 ##Foram identificadas duplicidades na massa de dados
 convenios <- distinct(convenios, ID_PROPOSTA, .keep_all = TRUE)
-convenios <- rename(convenios, id_proposta = ID_PROPOSTA, convenio=NR_CONVENIO, situacao_convenio=SIT_CONVENIO, data_limite_pc=DIA_LIMITE_PREST_CONTAS, valor_repasse_convenio=VL_REPASSE_CONV)
+convenios <- rename(convenios, id_proposta = ID_PROPOSTA, convenio=NR_CONVENIO, situacao_convenio=SIT_CONVENIO, qtd_dias_pc=DIAS_PREST_CONTAS, data_limite_pc=DIA_LIMITE_PREST_CONTAS, valor_repasse_convenio=VL_REPASSE_CONV)
 
 ##Carregar os dados de todas os históricos das propostas/convênios  do TransfereGov
 historicos_completo <- read.csv("planilhas de dados/siconv_historico_situacao.csv", sep=";" , dec=".")

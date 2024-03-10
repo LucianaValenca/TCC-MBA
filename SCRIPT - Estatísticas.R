@@ -8,15 +8,12 @@ count(convenio_proposta)
 #Total de concedentes - 107
 count(distinct(dados_transferegov, concedente))
 
-#Total de convênios por órgãos - ano / orgao / valor total
-totalConveniosOrgaoAno <- dados_transferegov %>% count(concedente, ano) 
 
 #Tempo médio de apresentação do plano de trabalho (convenente) 
 mediaElabPlanPorConvenente <- tempo_positivo_elab_plano %>%                                      
   group_by(convenente) %>%
   summarise_at(vars(tempo_elaboracao_plano_trabalho_dias),
                list(mean =mean))
-
 
 
 #Tempo médio  de análise do plano de trabalho  (mandatária e concedente)
