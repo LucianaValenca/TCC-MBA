@@ -136,4 +136,37 @@ totalRepasseOrgaoAno_top10 <- dados_transferegov_top_10_concedentes %>%
 
 
 
+#anova - Um experimento com um fator (X) com três repassadores (T1,T2,T3...) e uma variável respota contínua (tempo). 
 
+#Se olharmos para a tabela do ANOVA gerada, podemos observar que existe diferença significativa entre os repassadores (T1,T2 e T3). 
+#Para testar estatisticamente quais reepassadores são diferentes vamos realizar o teste de Tukey.
+
+
+# anova <- aov(tempo_analise_plano_trabalho_dias ~ sigla, data= tempo_positivo_aprov_plano_top10)
+# summary(anova)
+# # TukeyHSD(anova)
+# # 
+medias <- with(tempo_positivo_aprov_plano_top10,tapply(tempo_analise_plano_trabalho_dias,sigla,mean))
+medias
+# # 
+erro <- with(tempo_positivo_aprov_plano_top10,tapply(tempo_analise_plano_trabalho_dias,sigla,function(x) sqrt(var(x)/length(x))))
+erro
+# # 
+# leveneTest(tempo_analise_plano_trabalho_dias ~ sigla, data = tempo_positivo_aprov_plano_top10)
+# # # 
+#  shapiro.test(resid(anova)[0:5000])
+# # 
+#  require(MASS)
+#  boxcox(tempo_analise_plano_trabalho_dias ~ sigla, data = tempo_positivo_aprov_plano_top10, plotit=T)
+#  boxcox(tempo_analise_plano_trabalho_dias ~ sigla, data = tempo_positivo_aprov_plano_top10, lam=seq(-1, 1, 1/10))
+#  
+ # 
+# library(nortest)
+# ad.test(resid(anova))
+# 
+x <- barplot(medias,beside=T,ylim=c(0,150),ylab="Y",xlab="X")
+arrows(x0=x,y0=medias-erro,
+       x1=x,y1=medias+erro,
+       angle=90,length=0.14,code=3)
+
+#https://medium.com/omixdata/an%C3%A1lise-de-vari%C3%A2ncia-anova-one-way-e-tukey-usando-r-f91b6f79240e

@@ -18,6 +18,10 @@
 
 
 #linhas
+
+md  <- tempo_positivo_aprov_plano_top10 %>% 
+  filter(sigla == "MD")
+
 g1 <- tempo_positivo_aprov_plano_top10 %>% 
   filter(sigla == "MD") %>%  
   group_by(ano) %>% 
@@ -27,6 +31,17 @@ g1 <- tempo_positivo_aprov_plano_top10 %>%
   labs(x = "Ano",
           y = "Tempo Médio Aporvação Plano de Trabalho (em dias)")+
   geom_line()
+
+anova <- aov(tempo_analise_plano_trabalho_dias ~ conce, data= md)
+summary(anova)
+
+leveneTest(tempo_analise_plano_trabalho_dias ~ ano, data= md)
+shapiro.test(resid(anova)[0:5000])
+
+# #normalização
+min = min(tempo_positivo_elab_plano_top10_31$tempo_elaboracao_plano_trabalho_dias)
+max = max(tempo_positivo_elab_plano_top10_31$tempo_elaboracao_plano_trabalho_dias)
+tempo_positivo_elab_plano_top10_31$t_normal <- (tempo_positivo_elab_plano_top10_31$tempo_elaboracao_plano_trabalho_dias - min)/(max - min)
 
 
 g1

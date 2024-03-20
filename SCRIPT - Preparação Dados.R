@@ -141,6 +141,7 @@ temp <- convenio_proposta_juncao %>%
 
 
 temp$tempo_elaboracao_plano_trabalho_dias <- replace(temp$tempo_elaboracao_plano_trabalho_dias, temp$tempo_elaboracao_plano_trabalho_dias == -1 , 0)
+temp$tempo_elaboracao_plano_trabalho_dias <- replace(temp$tempo_elaboracao_plano_trabalho_dias, temp$tempo_elaboracao_plano_trabalho_dias == 0 , 1)
 temp$tempo_elaboracao_plano_trabalho_dias <- replace(temp$tempo_elaboracao_plano_trabalho_dias, temp$tempo_elaboracao_plano_trabalho_dias < -1 , NA)
 tempo_positivo_elab_plano <- 
   filter(temp, tempo_elaboracao_plano_trabalho_dias >= 0) %>%
@@ -160,6 +161,7 @@ mediaElabPlanPorConvenente <- tempo_positivo_elab_plano %>%
                list(mean =mean))
 
 temp$tempo_analise_plano_trabalho_dias <- replace(temp$tempo_analise_plano_trabalho_dias, temp$tempo_analise_plano_trabalho_dias == -1 , 0)
+temp$tempo_analise_plano_trabalho_dias <- replace(temp$tempo_analise_plano_trabalho_dias, temp$tempo_analise_plano_trabalho_dias == 0 , 1)
 temp$tempo_analise_plano_trabalho_dias <- replace(temp$tempo_analise_plano_trabalho_dias, temp$tempo_analise_plano_trabalho_dias < -1 , NA)
 tempo_positivo_aprov_plano <- 
   filter(temp, tempo_analise_plano_trabalho_dias >= -1) %>%
@@ -179,6 +181,7 @@ mediaAprovPlanPorConcedente <- tempo_positivo_aprov_plano %>%
 
 #retirado os tempos negativos - antecipação de PC ou inconsistência na base ???
 temp$tempo_prestacao_contas_enviado_analise_dias <- replace(temp$tempo_prestacao_contas_enviado_analise_dias, temp$tempo_prestacao_contas_enviado_analise_dias == -1 , 0)
+temp$tempo_prestacao_contas_enviado_analise_dias <- replace(temp$tempo_prestacao_contas_enviado_analise_dias, temp$tempo_prestacao_contas_enviado_analise_dias == 0 , 1)
 temp$tempo_prestacao_contas_enviado_analise_dias <- replace(temp$tempo_prestacao_contas_enviado_analise_dias, temp$tempo_prestacao_contas_enviado_analise_dias < -1 , NA)
 tempo_positivo_envio_pc <- 
   filter(temp, tempo_prestacao_contas_enviado_analise_dias >= -1) %>%
@@ -201,6 +204,7 @@ mediaEnvioPCConvenente <- tempo_positivo_envio_pc %>%
 
 #retirado os tempos negativos - inconsistência na base ???
 temp$tempo_prestacao_contas_em_analise_dias <- replace(temp$tempo_prestacao_contas_em_analise_dias, temp$tempo_prestacao_contas_em_analise_dias == -1 , 0)
+temp$tempo_prestacao_contas_em_analise_dias <- replace(temp$tempo_prestacao_contas_em_analise_dias, temp$tempo_prestacao_contas_em_analise_dias == 0 , 1)
 temp$tempo_prestacao_contas_em_analise_dias <- replace(temp$tempo_prestacao_contas_em_analise_dias, temp$tempo_prestacao_contas_em_analise_dias < -1 , NA)
 tempo_positivo_fim_pc <- 
   filter(temp, tempo_prestacao_contas_em_analise_dias >= -1) %>%
