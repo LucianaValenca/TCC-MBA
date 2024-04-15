@@ -55,3 +55,33 @@ tempo_positivo_envio_pc_top10_31 <-
 
 
 ##top 31 CONVENENTES
+
+conv <- tempo_positivo_elab_plano_top10_31 %>% filter(convenente == 'RIO DE JANEIRO')
+
+totalConveniosConvAcumulado_ano_top10 <- conv %>% count(convenente, ano) 
+
+conv <- tempo_positivo_elab_plano_top10_31 %>% filter(convenente == 'SAO PAULO')
+
+totalConveniosConvAcumulado_ano_top10 <- conv %>% count(convenente, ano) 
+
+conv <- tempo_positivo_elab_plano_top10_31 %>% filter(convenente == 'BELO HORIZONTE')
+
+totalConveniosConvAcumulado_ano_top10 <- conv %>% count(convenente, ano) 
+
+
+
+
+#sao luis
+conv <- tempo_positivo_envio_pc_top10_31 %>% filter(convenente == 'SAO LUIS')
+
+totalConveniosConvAcumulado_ano_top10 <- conv %>% count(convenente, ano) 
+
+#jp
+conv <- tempo_positivo_envio_pc_top10_31 %>% filter(convenente == 'JOAO PESSOA')
+
+totalConveniosConvAcumulado_ano_top10 <- conv %>% count(convenente, ano) 
+
+conv <- tempo_positivo_envio_pc_top10_31 %>% filter(convenente == 'SALVADOR')
+
+totalConveniosConvAcumulado_ano_top10 <- conv %>% count(convenente, ano) 
+

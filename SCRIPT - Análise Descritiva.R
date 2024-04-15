@@ -1,38 +1,52 @@
-## https://agronomiar.github.io/livroagro/estat%C3%ADstica-descritiva.html
 
-#geração de loxpot para identificar outliers
+# tempo_elaboracao_plano_trabalho_dias
+(médias = tapply(tempo_positivo_elab_plano_top10_31$tempo_elaboracao_plano_trabalho_dias, tempo_positivo_elab_plano_top10_31$ano, mean))
 
-#boxplot tempo_positivo_elab_plano_top10_31
-ggplot(tempo_positivo_elab_plano_top10_31, aes(x=convenente, y=tempo_elaboracao_plano_trabalho_dias))+
-  xlab("Convenentes") + 
-  ylab("Tempo de apresentação do plano de trabalho (dias)") +
-  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1, colour = "black"), axis.text.y = element_text(colour = "black")) +
-  scale_y_continuous(breaks = c(250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000))+
-  geom_boxplot()
-
-#boxplot tempo_positivo_aprov_plano_top10
-ggplot(tempo_positivo_aprov_plano_top10, aes(x=sigla, y=tempo_analise_plano_trabalho_dias))+
-  xlab("Concedentes") + 
-  ylab("Tempo de de análise do plano de trabalho (dias)") +
-  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1, colour = "black"), axis.text.y = element_text(colour = "black")) +
-  scale_y_continuous(breaks = c(250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000))+
-  geom_boxplot()
-
-#boxplot tempo_positivo_envio_pc_top10_31
-ggplot(tempo_positivo_envio_pc_top10_31, aes(x=convenente, y=tempo_prestacao_contas_enviado_analise_dias))+
-  xlab("Convenentes") + 
-  ylab("Tempo de envio da prest. de contas para análise (dias)") +
-  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1, colour = "black"), axis.text.y = element_text(colour = "black")) +
-  scale_y_continuous(breaks = c(250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000))+
-  geom_boxplot()
+# tempo_analise_plano_trabalho_dias
+(médias = tapply(tempo_positivo_aprov_plano_top10$tempo_analise_plano_trabalho_dias, tempo_positivo_aprov_plano_top10$ano, mean))
 
 
-#boxplot tempo_positivo_fim_pc_top10
-ggplot(tempo_positivo_fim_pc_top10, aes(x=sigla, y=tempo_prestacao_contas_em_analise_dias))+
-  xlab("Concedentes") + 
-  ylab("Tempo de prestação de contas em análise (dias)") +
-  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1, colour = "black"), axis.text.y = element_text(colour = "black")) +
-  scale_y_continuous(breaks = c(250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000))+
-  geom_boxplot()
+#tempo_prestacao_contas_enviado_analise_dias
+(médias = tapply(tempo_positivo_envio_pc_top10_31$tempo_prestacao_contas_enviado_analise_dias, tempo_positivo_envio_pc_top10_31$ano, mean))
+
+#tempo_prestacao_contas_em_analise_dias
+(médias = tapply(tempo_positivo_fim_pc_top10$tempo_prestacao_contas_em_analise_dias, tempo_positivo_fim_pc_top10$ano, mean))
+
+#para tabelas de apoio - CONCEDENTES
+#MS
+conc <- tempo_positivo_aprov_plano_top10 %>% filter(sigla == 'MS')
+(médias = tapply(conc$tempo_analise_plano_trabalho_dias, conc$ano, mean))
+
+#MD
+conc <- tempo_positivo_fim_pc_top10 %>% filter(sigla == 'MD')
+(médias = tapply(conc$tempo_prestacao_contas_em_analise_dias, conc$ano, mean))
+
+#MCID
+conc <- tempo_positivo_fim_pc_top10 %>% filter(sigla == 'MCID')
+(médias = tapply(conc$tempo_prestacao_contas_em_analise_dias, conc$ano, mean))
 
 
+#para tabelas de apoio - CONVENENTES
+# Rio de Janeiro
+conv <- tempo_positivo_elab_plano_top10_31 %>% filter(convenente == 'RIO DE JANEIRO')
+(médias = tapply(conv$tempo_elaboracao_plano_trabalho_dias, conv$ano, mean))
+
+#SP
+conv <- tempo_positivo_elab_plano_top10_31 %>% filter(convenente == 'SAO PAULO')
+(médias = tapply(conv$tempo_elaboracao_plano_trabalho_dias, conv$ano, mean))
+
+#BH
+conv <- tempo_positivo_elab_plano_top10_31 %>% filter(convenente == 'BELO HORIZONTE')
+(médias = tapply(conv$tempo_elaboracao_plano_trabalho_dias, conv$ano, mean))
+
+#SAO LUS
+conv <- tempo_positivo_envio_pc_top10_31 %>% filter(convenente == 'SAO LUIS')
+(médias = tapply(conv$tempo_prestacao_contas_enviado_analise_dias, conv$ano, mean))
+
+#JOAO PESSOA
+conv <- tempo_positivo_envio_pc_top10_31 %>% filter(convenente == 'JOAO PESSOA')
+(médias = tapply(conv$tempo_prestacao_contas_enviado_analise_dias, conv$ano, mean))
+
+#SALVADOR
+conv <- tempo_positivo_envio_pc_top10_31 %>% filter(convenente == 'SALVADOR')
+(médias = tapply(conv$tempo_prestacao_contas_enviado_analise_dias, conv$ano, mean))

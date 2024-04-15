@@ -22,6 +22,9 @@ dim(data_no_outlier)
 #"Outliers métrica Tempo de apresentação do plano de trabalho"
 4441-4020
 
+#PERCENTUALMENTE
+((4441-4020)*100)/4441
+
 #descririva geral
 (media= mean(data_no_outlier$tempo_elaboracao_plano_trabalho_dias))
 (mediana= median(data_no_outlier$tempo_elaboracao_plano_trabalho_dias))
@@ -52,12 +55,21 @@ IQR <- IQR(tempo_positivo_aprov_plano_top10$tempo_analise_plano_trabalho_dias)
 Lower <- quartiles[1] - 1.5*IQR
 Upper <- quartiles[2] + 1.5*IQR 
 
+Lower ##entre 102 e 205.5
+Upper 
+
 data_no_outlier3 <- subset(tempo_positivo_aprov_plano_top10, tempo_positivo_aprov_plano_top10$tempo_analise_plano_trabalho_dias > Lower & tempo_positivo_aprov_plano_top10$tempo_analise_plano_trabalho_dias < Upper)
+data_outlier3  <- subset(tempo_positivo_aprov_plano_top10, tempo_positivo_aprov_plano_top10$tempo_analise_plano_trabalho_dias < Lower | tempo_positivo_aprov_plano_top10$tempo_analise_plano_trabalho_dias > Upper)
 
 dim(data_no_outlier3)
+dim(data_outlier3)
+
 
 #"Outliers métrica Tempo de análise do plano de trabalhoo"
 63364-58065
+
+#PERCENTUALMENTE
+((63364-58065)*100)/63364
 
 #descririva geral
 (media= mean(data_no_outlier3$tempo_analise_plano_trabalho_dias))
@@ -101,6 +113,9 @@ totalatrasados <- rename(totalatrasados, 'convenentes' = convenente)
 #"Outliers Métrica Tempo de envio da prestação de contas para análise"
 2620-2304
 
+#PERCENTUALMENTE
+((2620-2304)*100)/2620
+
 #descririva geral
 (media= mean(data_no_outlier2$tempo_prestacao_contas_enviado_analise_dias))
 (mediana= median(data_no_outlier2$tempo_prestacao_contas_enviado_analise_dias))
@@ -141,6 +156,9 @@ dim(data_no_outlier4)
 
 #"Outliers métrica Tempo de prestação de contas em análise"
 34676-31550
+
+#PERCENTUALMENTE
+((34676-31550)*100)/34676
 
 #descririva geral
 (media= mean(data_no_outlier4$tempo_prestacao_contas_em_analise_dias))

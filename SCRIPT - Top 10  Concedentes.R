@@ -46,7 +46,11 @@ tempo_positivo_fim_pc_top10 <-
          dt_analise_prestacao_contas, dt_fim_prestacao_contas, 
          tempo_prestacao_contas_em_analise_dias, sigla, data_limite_pc)
 
+
+#Tabelas de apoio
 totalConveniosOrgaoAcumulado_top10 <- dados_transferegov_top_10_concedentes %>% count(concedente, sigla) 
 
+ms <- tempo_positivo_aprov_plano_top10 %>% filter(sigla == 'MS')  %>% count(ano) 
 
-##top 10 CONCEDENTES
+totalConveniosOrgaoAcumulado_ano_top10 <- tempo_positivo_fim_pc_top10 %>%   filter(sigla %in% c('MCID', 'MD')) %>% count(sigla, ano) 
+
